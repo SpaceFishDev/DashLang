@@ -25,7 +25,6 @@ namespace DashLang
             for(; insptr != file.Length; ++ insptr)
             {
                 char c = file[insptr];
-                ++insptr;
                 if (!error)
                 {
                     switch (c)
@@ -103,6 +102,14 @@ namespace DashLang
                                                 stack[sp] = val;
                                                 break;
                                             }
+                                        case 3:
+                                            {
+                                                int val = registers[rp];
+                                                val *= stack[sp];
+                                                stack[sp + 1] = val;
+                                                sp++;
+                                                break;
+                                            }
                                     }
                                 }
                                 break;
@@ -122,6 +129,10 @@ namespace DashLang
                                     if(stack[req_loop] == 0)
                                     {
                                         flag = 0;
+                                    }
+                                    else
+                                    {
+                                        stack[req_loop] -= 1;
                                     }
                                 }
                                 break;
