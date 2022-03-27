@@ -5,11 +5,6 @@ namespace DashLang
 {
     class Program
     {
-        public enum interupts
-        {
-            PRINT,
-            PUSH
-        }
         static void Main(string[] args)
         {
             string file = "";
