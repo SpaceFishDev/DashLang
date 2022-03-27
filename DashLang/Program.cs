@@ -7,7 +7,8 @@ namespace DashLang
     {
         public enum interupts
         {
-            PRINT
+            PRINT,
+            PUSH
         }
         static void Main(string[] args)
         {
@@ -21,9 +22,15 @@ namespace DashLang
             int[] stack = new int[1000];
             int[] registers = new int[1000];
             bool error = false;
+            int insptr = 0;
+            int req_loop = 0;
+            int start_loop = 0;
+            int flag = 0;
 
-            foreach (char c in file)
+            for(; insptr != file.Length; ++ insptr)
             {
+                char c = file[insptr];
+                ++insptr;
                 if (!error)
                 {
                     switch (c)
@@ -70,28 +77,72 @@ namespace DashLang
                             }
                         case '+':
                             {
-
+                                registers[rp] ++;
+                                break;
+                            }
+                        case '|':
+                            {
+                                registers[rp]--;
                                 break;
                             }
                         case ':':
                             {
                                 if (rp != 0)
                                 {
-                                    interupts i = (interupts)registers[rp - 1];
+                                    int i = registers[rp - 1];
                                     switch (i)
                                     {
-                                        case interupts.PRINT:
+                                        case 1:
                                             {
-                                                
+                                                int x = registers[rp];
+                                                while (registers[x] != 0)
+                                                {
+                                                    Console.Write((char)registers[x]);
+                                                    ++x;
+                                                }
                                                 break;
-                                            }  
+                                            }
+                                        case 2:
+                                            {
+                                                int val = registers[rp];
+                                                stack[sp] = val;
+                                                break;
+                                            }
                                     }
+                                }
+                                break;
+                            }
+                        case '{':
+                            {
+                                start_loop = insptr;
+                                req_loop = sp;
+                                sp--;
+                                flag = 1;
+                                break;
+                            }
+                        case '.':
+                            {
+                                if (flag == 1)
+                                {
+                                    if(stack[req_loop] == 0)
+                                    {
+                                        flag = 0;
+                                    }
+                                }
+                                break;
+                            }
+                        case '}':
+                            {
+                                if(flag == 1)
+                                {
+                                    insptr = start_loop;
                                 }
                                 break;
                             }
                     }
                 }
             }
+            Console.ReadKey();
         }
     }
 }
